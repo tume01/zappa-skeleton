@@ -18,6 +18,7 @@ services:
   web:
     depends_on:
       - db
+      - dynamo
     build: .
     volumes:
       - ./src:/var/task
@@ -27,6 +28,10 @@ services:
       - "8000:8000"
     links:
       - db:db
-
+  dynamo:
+    container_name: django-dynamo
+    image: "amazon/dynamodb-local"
+    ports:
+    - 8000
 volumes:
   db_data:

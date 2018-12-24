@@ -31,3 +31,4 @@ urllib3==1.23
 verify==1.1.1
 django-cron==0.5.1
 zappa==0.47.0
+pynamodb==3.3.1
