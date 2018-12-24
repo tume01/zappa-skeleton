@@ -1,0 +1,32 @@
+version: '3.3'
+
+services:
+  db:
+    restart: always
+    image: mysql:5.7
+    container_name: django-mysql
+    ports:
+      - 6603:3306
+    environment:
+      MYSQL_ROOT_PASSWORD: django_app
+      MYSQL_DATABASE: django_app
+      MYSQL_USER: django_app
+      MYSQL_PASSWORD: django_app
+    volumes:
+      - db_data:/var/lib/mysql
+
+  web:
+    depends_on:
+      - db
+    build: .
+    volumes:
+      - ./src:/var/task
+    container_name: django-app
+    env_file: .env
+    ports:
+      - "8000:8000"
+    links:
+      - db:db
+
+volumes:
+  db_data:

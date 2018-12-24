@@ -1,0 +1,37 @@
+version: '3.3'
+
+services:
+  db_test:
+    restart: always
+    image: mysql:5.7
+    container_name: mysql-test
+    ports:
+      - 6603:3306
+    environment:
+      MYSQL_ROOT_PASSWORD: django_app
+      MYSQL_DATABASE: django_app
+      MYSQL_USER: django_app
+      MYSQL_PASSWORD: django_app
+    volumes:
+      - db_test_data:/var/lib/mysql
+
+  web_test:
+    depends_on:
+      - db_test
+    image: lambci/lambda:build-python3.6
+    build:
+      context: ../..
+      dockerfile: ./docker-compose/test-env/Dockerfile
+    volumes:
+      - app_test_data:/var/task
+    container_name: django-app-test
+    command: bash -c "source /var/django-environment/bin/activate && python manage.py test -k"
+    env_file: .env
+    ports:
+      - "8000:8000"
+    links:
+      - db_test:db_test
+
+volumes:
+  db_test_data:
+  app_test_data:
